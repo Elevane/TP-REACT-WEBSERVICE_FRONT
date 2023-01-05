@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
-import jwt_decode from "jwt-decode";
-async function register(email, password, username, googletoken) {
+import React from "react";
+async function register(email, password, username) {
   const user = {
-    username: username,
+    username : username,
     email: email,
     password: password,
-    googletoken: googletoken,
   };
   return fetch(process.env.REACT_APP_DBHOST_USERS + "/register", {
     method: "POST",
@@ -18,100 +16,116 @@ async function register(email, password, username, googletoken) {
   }).then((data) => data.json());
 }
 
-const hrandleCallback = async (response) => {
-  var userGoogle = jwt_decode(response.credential);
-  console.log(userGoogle);
-  await register(userGoogle.email, null, userGoogle.jti).then((value) => {
-    if (!value.isSuccess) {
-      alert(value.errorMessage);
-    } else if (value.result === undefined) {
-      alert("Failed connection Error");
-    } else {
-      localStorage.setItem("user", JSON.stringify({ user: value.result }));
-      window.location.href = "/";
-    }
-  });
-};
 
 export default function CreateAccount() {
-  const [email, setEmail] = React.useState();
-  const [password, setPassword] = React.useState();
-  const [username, setUserName] = React.useState();
-
-  useEffect(() => {
-    window.google.accounts.id.initialize({
-      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-      callback: hrandleCallback,
-    });
-    window.google.accounts.id.renderButton(
-      document.getElementById("signInButton"),
-      { theme: "outline", size: "large" }
-    );
-  }, [window.google]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await register(email, password, username, null).then((value) => {
-      if (!value.isSuccess) {
-        alert(value.errorMessage);
-      } else if (value.result === undefined) {
-        alert("Failed connection Error");
-      } else {
-        localStorage.setItem("user", JSON.stringify({ user: value.result }));
-        window.location.href = "/";
-      }
-    });
-  };
+    const [email, setEmail] = React.useState();
+    const [password, setPassword] = React.useState();
+    const [username, setUserName] = React.useState();
+    
+    const handleSubmit = async e => {
+        
+        e.preventDefault();
+        await register(email, password, username).then((value) => {
+          if (!value.isSuccess) {
+            alert(value.errorMessage);
+          }
+          else if (value.result === undefined) {
+            alert("Failed connection Error value has no result" );
+          }
+          else {
+            localStorage.setItem(
+              "user",
+              JSON.stringify({ user: value.result })
+            );
+            window.location.href = "/"
+          }
+         
+        });
+    }
 
   return (
-    <div id="login-form-wrap">
-      <h2 className="pb-2"> Create account </h2>{" "}
-      <form id="login-form" onSubmit={handleSubmit}>
-        <p>
-          <input
-            type="text"
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-            name="email"
-            placeholder="Email"
-            required
-          />
-        </p>{" "}
-        <p>
-          <input
-            type="text"
-            id="username"
-            onChange={(e) => setUserName(e.target.value)}
-            name="username"
-            placeholder="username"
-            required
-          />
-        </p>{" "}
-        <p>
-          <input
-            type="password"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-            name="password"
-            placeholder="Password"
-            required
-          />
-        </p>{" "}
-        <p>
-          <input type="submit" id="create" value="create" />
-        </p>{" "}
-      </form>{" "}
-      <div id="signInButton">Barre toi</div>
-      <div id="create-account-wrap">
-        <p>
-          {" "}
-          Already a member,{" "}
-          <a href="/login">
-            {"   "}
-            Login{" "}
-          </a>
-        </p>
-      </div>{" "}
+
+    <div className="container">
+      <div className="row">
+        <div className="col-md-6 offset-md-3">
+          <h2 className="text-center text-dark mt-5">Map Marker</h2>
+          <div className="text-center mb-5 text-dark">TP PWA bastien AUBRY</div>
+          <div className="card my-5">
+            <form
+              className="card-body cardbody-color p-lg-5"
+              onSubmit={handleSubmit}
+            >
+              <div className="text-center">
+                <img
+                  src="img/logo.png"
+                  className="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
+                  width="200px"
+                  alt="profile"
+                />
+              </div>
+
+              <div className="mb-3">
+                <input
+                  type="text"
+                  id="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  name="email"
+                  placeholder="email"
+                  aria-describedby="emailHelp"
+                  className="form-control"
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <input
+                  type="text"
+                  id="username"
+                  onChange={(e) => setUserName(e.target.value)}
+                  name="username"
+                  placeholder="username"
+                  aria-describedby="usernameHelp"
+                  className="form-control"
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <input
+                  type="password"
+                  id="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  placeholder="password"
+                  className="form-control"
+                  required
+                />
+              </div>
+              <div className="text-center">
+                <input
+                  type="submit"
+                  id="Create"
+                  value="Create"
+                  className="btn btn-color px-5 mb-5 w-100"
+                />
+              </div>
+              <div
+                id="emailHelp"
+                className="form-text text-center mb-5 text-dark"
+              >
+                Already have an account?{" "}
+                <a
+                  href="/login"
+                 
+                  className="text-dark fw-bold"
+                >
+                  {" "}
+                  Login
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
+
   );
 }
