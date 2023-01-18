@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "react-toastify";
 
 async function authenticate(email, password) {
   const user = {
@@ -22,22 +23,24 @@ export default function Login() {
   const [password, setPassword] = React.useState();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Authentification starting");
     await authenticate(email, password)
       .then((value) => {
         if (value === null || value === undefined)
-          alert("Return value can't be read");
+          toast.error("Return value can't be read");
         else if (!value.isSuccess) {
-          alert(value.errorMessage);
+          toast.error(value.errorMessage);
         } else if (value.result === undefined) {
-          alert("result is undifiend");
+          toast.error("result is undifiend");
         } else {
-          localStorage.setItem("user", JSON.stringify({ user: value.result }));
+          localStorage.setItem(
+            process.env.REACT_APP_AUTH_COOKIE_NAME,
+            JSON.stringify({ user: value.result })
+          );
           window.location.href = "/";
         }
       })
       .catch(function () {
-        alert("Failed to fetch api");
+        toast.error("Failed to fetch api");
       });
   };
 

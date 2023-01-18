@@ -34,7 +34,7 @@ export default function CreateAccount() {
           }
           else {
             localStorage.setItem(
-              "user",
+              process.env.REACT_APP_AUTH_COOKIE_NAME,
               JSON.stringify({ user: value.result })
             );
             window.location.href = "/"

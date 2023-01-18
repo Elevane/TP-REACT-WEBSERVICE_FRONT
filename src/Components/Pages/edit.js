@@ -1,170 +1,185 @@
-import { useEffect, useState } from "react";
-import useLocalStorage
- from "../auth/Hooks/useLocalStorage";
- import { useParams } from "react-router";
- import GoogleMapReact from "google-map-react";
+import { useState, useParams } from "react";
+import useLocalStorage from "../auth/Hooks/useLocalStorage";
+import GoogleMapReact from "google-map-react";
 import React from "react";
+import { TextareaAutosize, TextField, Button, Switch } from "@mui/material";
 
- const AnyReactComponent = ({ text }) => <div style={{position: "absolute",
-    top: "50%",
-    left: "50%",
-    width: "18px",
-    height: "18px",
-    backgroundColor: "#2196F3",
-    border: "2px solid #fff",
-    borderRadius: "100%",
-    userSelect: "none",}} >{text}</div>;
+const AnyReactComponent = ({ text }) => (
+  <div
+    style={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      width: "18px",
+      height: "18px",
+      backgroundColor: "#2196F3",
+      border: "2px solid #fff",
+      borderRadius: "100%",
+      userSelect: "none",
+    }}
+  >
+    {text}
+  </div>
+);
 
-function getApp(id) {
-    let user = useLocalStorage.GetUser();
-    return fetch(process.env.REACT_APP_DBHOST_APPS+"/"+id, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        Authorization: "Bearer " + user.token,
-        Accept: "*/*",
-      },
-    }).then((data) =>  data.json());
-  }
+function updateAppApi(id, lattitude, longitude, name, active) {
+  let user = useLocalStorage.GetUser();
+  let app = {
+    id: id,
+    lattitude: parseFloat(lattitude),
+    longitude: parseFloat(longitude),
+    name: name,
+    active: active,
+  };
 
-  function updateAppApi(id, lattitude, longitude, name, active) {
-    let user = useLocalStorage.GetUser();
-    let app = {
-        "id" : id,
-        "lattitude" :  parseFloat(lattitude),
-        "longitude" : parseFloat(longitude),
-        "name" : name,
-        "active" : active
-    }
-    
-    return fetch(process.env.REACT_APP_DBHOST_APPS, {
-      method: "PUT",
-      body : JSON.stringify(app),
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        Authorization: "Bearer " + user.token,
-        Accept: "*/*",
-      },
-    });
-  }
-export default function Edit(props){
+  return fetch(process.env.REACT_APP_DBHOST_APPS, {
+    method: "PUT",
+    body: JSON.stringify(app),
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      Authorization: "Bearer " + user.token,
+      Accept: "*/*",
+    },
+  });
+}
+export default function Edit(props) {
+  const [name, setName] = useState(props.name);
+  const [lattitude, setLattitude] = useState(props.lat);
+  const [longitude, setLongitude] = useState(props.lng);
+  const [active, setActive] = useState(props.active);
+  const [description, setDescription] = useState(props.description);
 
-    const [name, setName] = useState("");
-    const [lattitude, setLattitude] = useState(55)
-    const [longitude, setLongitude] = useState(55)
-    const [active, setActive] = useState(true)
-    
-    const { id } = useParams();
-    const [pos, setPos] = useState({ 
-        lat: 52,
-        lng: 2,
+  const { id } = useParams();
+
+  const ChangePos = (e) => {
+    setLattitude(e.lat);
+    setLongitude(e.lng);
+  };
+
+  const Update = () => {
+    updateAppApi(id, lattitude, longitude, name, active).then((value) => {
+      if (value.status !== 200) {
+        alert("Failed connection Error");
       }
-    );
-    const ChangePos = (e) => {
-        setLattitude(e.lat)
-        setLongitude(e.lng)
-    }
+    });
+  };
 
-    const updateApp = () => {
-        updateAppApi(id, lattitude, longitude, name, active).then((value) => {
-            
-            if (value.status != 200) {
-              alert("Failed connection Error");
-        
-            } 
-          });;
-    }
+  const Cancel = () => {
+    window.location.href = "/dashboard";
+  };
 
-    useEffect(() => {
-        
-        getApp(id).then((value) => {
-          if (value == undefined || value == null || value.result === undefined) {
-            alert("Failed connection Error");
-          } else if (!value.isSuccess) {
-            alert(value);
-            alert(value.errorMessage);
-          } else {
-          setLattitude(value.result.lattitude)
-          setLongitude(value.result.longitude)
-          setName(value.result.name)
-          console.log(value.result)
-          setActive(value.result.active)
-          
-          setPos({     
-              lat: value.result.lattitude,
-              lng: value.result.longitude,
-            });
-            
-           
-          }
-        });
-      }, []);
+  return (
+    <div
+      style={{
+        margin: "50px",
+        width: "40%",
+        height: "1200px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+      }}
+    >
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <h2>Creation d'un Complot</h2>
+      </div>
 
-     
-      
+      <TextField
+        className="form-control"
+        required={true}
+        value={name}
+        id="outlined-basic"
+        label="Name"
+        variant="outlined"
+        onChange={(e) => setName(e.target.value)}
+      />
 
-       
-    return(
-    <div className="container">
-    
-    <div className="col-lg-12 text-lg-center" style={{margin : "50px"}}>
-        <h2>Motidifer le marqueur <strong>{name}</strong></h2>
+      <TextareaAutosize
+        disabled={true}
+        className="form-control"
+        required={true}
+        value={description}
+        id="outlined-basic"
+        label="Description"
+        variant="outlined"
+        minRows={7}
+        maxRows={7}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <div
+        style={{
+          width: "60%",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <TextField
+          type="number"
+          required={true}
+          value={lattitude}
+          id="outlined-basic"
+          label="Lattitude"
+          variant="outlined"
+          onChange={(e) => setLattitude(e.target.value)}
+        />
+        <TextField
+          type="number"
+          required={true}
+          value={lattitude}
+          id="outlined-basic"
+          label="Lattitude"
+          variant="outlined"
+          onChange={(e) => setLattitude(e.target.value)}
+        />
+      </div>
+      <div
+        style={{
+          width: "10%",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h5>Public</h5>
+        <Switch
+          label="Public"
+          checked={active}
+          onClick={() => setActive(!active)}
+        />
+      </div>
 
+      <div
+        style={{
+          height: "50vh",
+          width: "100%",
+        }}
+      >
+        <GoogleMapReact
+          onClick={(e) => ChangePos(e)}
+          bootstrapURLKeys={{ key: "" }}
+          defaultCenter={{ lat: 48, lng: -1 }}
+          defaultZoom={11}
+        >
+          <AnyReactComponent lat={lattitude} lng={longitude} />
+        </GoogleMapReact>
+      </div>
+
+      <div
+        style={{
+          width: "22%",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <Button variant="outlined" onClick={Cancel}>
+          Cancel
+        </Button>
+        <Button variant="contained" onClick={() => Update()}>
+          Save
+        </Button>
+      </div>
     </div>
-    <div className="col-lg-8 push-lg-4 personal-info" style={{"margin" :" auto"}}>
-         <form role="form">
-            <div className="form-group row">
-                <label className="col-lg-3 col-form-label form-control-label">Name</label>
-                <div className="col-lg-9">
-                    <input className="form-control" onChange={(e) => setName(e.target.value)} type="text" value={name} />
-                </div>
-            </div>
-            <div className="form-group row">
-                <label className="col-lg-3 col-form-label form-control-label">Lattitude</label>
-                <div className="col-lg-9">
-                    <input className="form-control" onChange={(e) => setLattitude(e.target.value)} type="text" value={lattitude} />
-                </div>
-            </div>
-            <div className="form-group row">
-                <label className="col-lg-3 col-form-label form-control-label">Longitude</label>
-                <div className="col-lg-9">
-                    <input className="form-control"onChange={(e) => setLongitude(e.target.value)}  type="text" value={longitude} />
-                </div>
-            </div>
-            <div className="form-group row">
-                <label className="col-lg-3 col-form-label form-control-label">Checkbox</label>
-                <div className="col-lg-9">
-               
-                    
-                  <input className="form-check-input form-control" onChange={(e) => setActive(!active)} type="checkbox" checked={active  == true? 'checked' : ''} />
-                
-                    
-                </div>
-            </div>
-            <div className="form-group row" style={{ height: "30vh", width: "50%", margin : "50px 50px 50px 250px" }}>
-                <GoogleMapReact onClick={(e) => ChangePos(e)}
-                bootstrapURLKeys={{ key: "" }}
-                center={{lat: pos.lat, lng: pos.lng}}
-                defaultCenter={{lat: 55, lng: 55}}
-                defaultZoom={11}
-                >
-                <AnyReactComponent lat={lattitude}
-                 lng={longitude}
-                />
-                
-                </GoogleMapReact>
-            </div>
-            <div className="form-group row">
-                <label className="col-lg-3 col-form-label form-control-label"></label>
-                <div className="col-lg-9" style={{display :"flex", justifyContent :"center"}}>
-                    <a type="reset" href="/dashboard" className="btn btn-secondary" value="Cancel" style={{"margin" :"5px"}}>Retour</a>
-                    <input onClick={() => updateApp()} type="button" className="btn btn-primary" value="Save Changes" style={{"margin" :"5px"}}/>
-                </div>
-            </div>
-        </form>
-    </div>
-    
-</div>);
+  );
 }

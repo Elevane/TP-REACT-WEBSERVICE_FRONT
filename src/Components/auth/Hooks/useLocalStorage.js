@@ -2,7 +2,7 @@
 
 
 const GetUser = () => {
-    const user = localStorage.getItem("user");
+    const user = localStorage.getItem("user_app_cookie_name");
     if(user === null)
         return false
     const parsed = JSON.parse(user);
