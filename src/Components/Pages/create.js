@@ -23,19 +23,7 @@ const AnyReactComponent = ({ text }) => (
     {text}
   </div>
 );
-async function getDescApi(search) {
-  return fetch(
-    process.env.REACT_APP_DBHOST_COMPLOT_SEARCH + "/searchOne?title=" + search,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        Accept: "*/*",
-      },
-    }
-  ).then((data) => data.json());
-}
+async function getDescApi(search) {}
 
 function CreateNewApp(lattitude, longitude, name, active, description) {
   let user = useLocalStorage.GetUser();
@@ -87,7 +75,8 @@ export default function Create() {
       (value) => {
         if (value === null || value === undefined || value.status === 404)
           toast.error("Failed connection Error.");
-        else if (!value.isSuccess) toast.error(`Could not create complot.`);
+        else if (!value.isSuccess)
+          toast.error(`Could not create complot | error : ${value.error}.`);
         else toast.success("value");
       }
     );

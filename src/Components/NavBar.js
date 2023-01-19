@@ -5,7 +5,7 @@ export default function NavBar() {
   return (
     <div
       className="w3-sidebar w3-light-grey w3-bar-block"
-      style={{ width: "25%" }}
+      style={{ width: "20%" }}
     >
       <h3 className="w3-bar-item" style={{ marginBottom: "40px" }}>
         Map Website
@@ -25,7 +25,7 @@ export default function NavBar() {
         <a href="/dashboard" className="w3-bar-item w3-button">
           Complots
         </a>
-        
+
         <a
           href="/logout"
           className="w3-bar-item w3-button"

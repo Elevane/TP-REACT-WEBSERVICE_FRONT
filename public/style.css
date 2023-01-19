@@ -1,34 +1,40 @@
-.btn-color{
-    background-color: #0e1c36;
-    color: #fff;
-    
-  }
-  
-  .profile-image-pic{
-    height: 200px;
-    width: 200px;
-    object-fit: cover;
-  }
-  
-  
-  
-  .cardbody-color{
-    background-color: #ebf2fa;
-  }
-  
-  a{
-    text-decoration: none;
-  }
+.btn-color {
+  background-color: #0e1c36;
+  color: #fff;
+}
+h1 {
+  font-family: "Montserrat";
+  font-weight: bold;
+}
 
-  .marker {
-    
-  }
-  .chart{
-    width: 30%;
-    height: 30%;
-    margin: 25px;
-    padding: 25px;
-    border: 1px solid lightgray;
-    border-radius: 5px;
-  }
- 
+.profile-image-pic {
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+}
+
+.cardbody-color {
+  background-color: #ebf2fa;
+}
+
+a {
+  text-decoration: none;
+}
+
+.marker {
+}
+.chart {
+  width: 30%;
+  height: 30%;
+  margin: 25px;
+  padding: 25px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+}
+
+.private_marker {
+  background-color: red;
+}
+.public_marker {
+  background-color: green;
+}
