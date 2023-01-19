@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import React from "react";
 import SearchComplot from "./SearchComplot";
 import { toast } from "react-toastify";
-import { TextareaAutosize, TextField, Button, Switch } from "@mui/material";
+import { TextareaAutosize, TextField, Button, Switch, Select, MenuItem, Chip } from "@mui/material";
 import Marker from "../Marker";
-import { getOneApi, createComplotApi } from "../hooks/useApi";
+import { getOneApi, createComplotApi, getAllGenresApi } from "../hooks/useApi";
 import { useParams } from "react-router-dom";
 
 export default function Create() {
@@ -14,6 +14,14 @@ export default function Create() {
   const [longitude, setLongitude] = useState(55);
   const [active, setActive] = useState(true);
   const [description, setDescription] = useState("");
+  const [ possibleGenres, setPossibleGenres] = useState([])
+  const [genres, setGenres] = useState([])
+
+  const color = ["#faedcd", "#d4a373", "#ccd5ae", "#e9edc9", "#fefae0"];
+
+  const getColor = (key) => {
+    return color[key];
+  };
   const ChangePos = (e) => {
     setLattitude(e.lat);
     setLongitude(e.lng);
@@ -27,6 +35,15 @@ export default function Create() {
     setName(res.result.title);
     setDescription(res.result.extract);
   };
+
+  useEffect(() => {
+    getAllGenresApi().then((value) => {
+      if(!value.isSucess) toast.error(value.error)
+      setPossibleGenres(value.result)
+    })
+
+  }, [])
+
   const Cancel = () => {
     window.location.href = "/dashboard";
   };
@@ -69,7 +86,19 @@ export default function Create() {
         variant="outlined"
         onChange={(e) => setName(e.target.value)}
       />
-
+      <div style={{display: "flex"}}>
+      {genres &&
+              genres.map((elm, index) => (
+                <Chip
+                  key={index}
+                  label={elm.name}
+                  style={{ margin: "5px", backgroundColor: getColor(index) }}
+                ></Chip>
+              ))}
+      </div>
+      <Select style={{width :"150px"}}>
+        {possibleGenres.map((elm, index) => <MenuItem key={index} value={elm.name} onClick={() => {setGenres([...genres, elm]); setPossibleGenres([...possibleGenres], elm)}}>{elm.name}</MenuItem>)}
+      </Select>
       <TextareaAutosize
         disabled={true}
         className="form-control"

@@ -2,7 +2,7 @@
 
 
 const GetUser = () => {
-    const user = localStorage.getItem("user_app_cookie_name");
+    const user = localStorage.getItem(process.env.REACT_APP_AUTH_COOKIE_NAME);
     if(user === null)
         return false
     const parsed = JSON.parse(user);

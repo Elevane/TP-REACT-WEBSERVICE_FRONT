@@ -67,6 +67,10 @@ const getOneApi = (title) => {
 const getAllApi = () => {
   return request("GET", `${process.env.REACT_APP_DBHOST_COMPLOT_SEARCH}`);
 };
+const getAllGenresApi = () => {
+  return request("GET", `${process.env.REACT_APP_DBHOST_COMPLOT_GENRES}`);
+};
+
 
 const createComplotApi = async (
   id,
@@ -88,4 +92,4 @@ const createComplotApi = async (
   return request("POST", `${process.env.REACT_APP_DBHOST_COMPLOT_SEARCH}`, app);
 };
 
-export { getOneApi, getAllApi, createComplotApi, searchManyApi };
+export {getAllGenresApi, getOneApi, getAllApi, createComplotApi, searchManyApi };
