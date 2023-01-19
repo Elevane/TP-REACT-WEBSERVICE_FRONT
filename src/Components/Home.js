@@ -2,7 +2,6 @@ import React from "react";
 import NavBar from "./NavBar";
 import GoogleMapReact from "google-map-react";
 import { useEffect, useState } from "react";
-import useLocalStorage from "./auth/Hooks/useLocalStorage";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import Marker from "./Marker";
@@ -20,7 +19,9 @@ export default function Home() {
 
   useEffect(() => {
     getAllApi().then((complots) => {
-      setMarkers(complots);
+      if (!complots.isSucess) toast.error(complots.error);
+      console.log(complots);
+      setMarkers(complots.result);
     });
   }, []);
 

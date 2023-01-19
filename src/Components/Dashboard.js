@@ -1,4 +1,4 @@
-import { AddCircle, CheckBox } from "@mui/icons-material";
+import { AddCircle, Delete, ModeEdit } from "@mui/icons-material";
 import {
   IconButton,
   Table,
@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import useLocalStorage from "./auth/Hooks/useLocalStorage";
+import { toast } from "react-toastify";
 import { getAllApi } from "./hooks/useApi";
 import NavBar from "./NavBar";
 
@@ -17,9 +17,12 @@ export default function Home() {
 
   useEffect(() => {
     getAllApi().then((complots) => {
-      setComplots(complots);
+      if (!complots.isSucess) toast.error(complots.error);
+      setComplots(complots.result);
     });
   }, []);
+
+  const deleteComplot = async () => {};
 
   return (
     <div style={{ width: "100%" }}>
@@ -39,36 +42,35 @@ export default function Home() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {complots.length > 0 ? (
-              complots.map((app, index) => (
-                <tr key={index}>
-                  <td>{app.name}</td>
-                  <td>{app.description}</td>
-                  <td>{app.lattitude}</td>
-                  <td>{app.longitude}</td>
-                  <td>
-                    <button type="button" className="btn btn-info m-1">
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href={"/dashboard/update/" + app.id}
-                      >
-                        edit
-                      </a>
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell style={{ borderBottom: "none" }}>
+            {complots.map((app, index) => (
+              <tr key={index}>
+                <td>{app.name}</td>
+                <td style={{ overflow: "hidden" }}>{app.description}</td>
+                <td>{app.lattitude}</td>
+                <td>{app.longitude}</td>
+                <td>
                   <IconButton
-                    onClick={() => (window.location.href = "/dashboard/create")}
+                    onClick={() =>
+                      (window.location.href = "/dashboard/update/" + app.id)
+                    }
                   >
-                    <AddCircle color="primary"></AddCircle>
+                    <ModeEdit />
                   </IconButton>
-                </TableCell>
-              </TableRow>
-            )}
+                  <IconButton onClick={deleteComplot}>
+                    <Delete />
+                  </IconButton>
+                </td>
+              </tr>
+            ))}
+            <TableRow>
+              <TableCell style={{ borderBottom: "none" }}>
+                <IconButton
+                  onClick={() => (window.location.href = "/dashboard/create")}
+                >
+                  <AddCircle color="primary"></AddCircle>
+                </IconButton>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </div>

@@ -1,35 +1,17 @@
 import { Autocomplete, CircularProgress, TextField } from "@mui/material";
 import React, { useState } from "react";
-
-async function searchApi(search) {
-  return fetch(
-    process.env.REACT_APP_DBHOST_COMPLOT_SEARCH +
-      "/search?query=" +
-      search +
-      "&limit=20",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        Accept: "*/*",
-      },
-    }
-  ).then((data) => data.json());
-}
+import { toast } from "react-toastify";
+import { searchManyApi } from "../hooks/useApi";
 
 export default function SearchComplot({ getDesc }) {
   const [renderOptions, setRenderOptions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const search = (e) => {
+
+  const search = async (e) => {
     if (e.target.value.length < 3) return;
-    searchApi(e.target.value).then((value) => {
-      if (!value.isSuccess) {
-        alert("Failed connection Error");
-      } else {
-        setRenderOptions(value.result);
-      }
-    });
+    var res = await searchManyApi(e.target.value);
+    if (!res.isSuccess) toast.error(res.error);
+    setRenderOptions(res.result);
   };
 
   const selectComplot = async (value) => {

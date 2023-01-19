@@ -1,50 +1,12 @@
 import { useState } from "react";
-import useLocalStorage from "../auth/Hooks/useLocalStorage";
 import GoogleMapReact from "google-map-react";
 import React from "react";
 import SearchComplot from "./SearchComplot";
 import { toast } from "react-toastify";
 import { TextareaAutosize, TextField, Button, Switch } from "@mui/material";
-
-const AnyReactComponent = ({ text }) => (
-  <div
-    style={{
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      width: "18px",
-      height: "18px",
-      backgroundColor: "#2196F3",
-      border: "2px solid #fff",
-      borderRadius: "100%",
-      userSelect: "none",
-    }}
-  >
-    {text}
-  </div>
-);
-async function getDescApi(search) {}
-
-function CreateNewApp(lattitude, longitude, name, active, description) {
-  let user = useLocalStorage.GetUser();
-  let app = {
-    lattitude: parseFloat(lattitude),
-    longitude: parseFloat(longitude),
-    name: name,
-    description: description,
-    public: active,
-  };
-  return fetch(process.env.REACT_APP_DBHOST_COMPLOT_SEARCH, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      Authorization: "Bearer " + user.token,
-      Accept: "*/*",
-    },
-    body: JSON.stringify(app),
-  });
-}
+import Marker from "../Marker";
+import { getOneApi, createComplotApi } from "../hooks/useApi";
+import { useParams } from "react-router-dom";
 
 export default function Create() {
   const [name, setName] = useState("");
@@ -57,29 +19,29 @@ export default function Create() {
     setLongitude(e.lng);
   };
 
+  const id = useParams();
+
   const getDesc = async (desc) => {
-    await getDescApi(desc).then((value) => {
-      if (value === null || value === undefined || value.status === 400)
-        toast.error("Failed connection Error");
-      else {
-        setDescription(value.result.extract);
-        setName(desc);
-      }
-    });
+    var res = await getOneApi(desc);
+    if (!res.isSucess) toast.error(res.error);
+    setName(res.result.title);
+    setDescription(res.result.extract);
   };
   const Cancel = () => {
     window.location.href = "/dashboard";
   };
+
   const Create = async () => {
-    await CreateNewApp(lattitude, longitude, name, active, description).then(
-      (value) => {
-        if (value === null || value === undefined || value.status === 404)
-          toast.error("Failed connection Error.");
-        else if (!value.isSuccess)
-          toast.error(`Could not create complot | error : ${value.error}.`);
-        else toast.success("value");
-      }
+    var res = await createComplotApi(
+      id,
+      lattitude,
+      longitude,
+      name,
+      active,
+      description
     );
+    if (!res.isSucess) toast.error(res.error);
+    if (res.isSucess) Cancel();
   };
 
   return (
@@ -175,7 +137,7 @@ export default function Create() {
           defaultCenter={{ lat: 48, lng: -1 }}
           defaultZoom={11}
         >
-          <AnyReactComponent lat={lattitude} lng={longitude} />
+          <Marker lat={lattitude} lng={longitude} />
         </GoogleMapReact>
       </div>
 
