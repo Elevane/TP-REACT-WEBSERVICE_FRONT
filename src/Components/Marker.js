@@ -1,15 +1,11 @@
 import { IconButton, Popover, Typography, Chip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useState } from "react";
+import useColors from "./auth/Hooks/useColors";
 
 export default function Marker({ name, isPublic, desc, lat, lng, genres }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const color = ["#faedcd", "#d4a373", "#ccd5ae", "#e9edc9", "#fefae0"];
-
-  const getColor = (key) => {
-    return color[key];
-  };
   const handleClick = (event) => {
     if (!open) setAnchorEl(event.currentTarget);
   };
@@ -87,7 +83,10 @@ export default function Marker({ name, isPublic, desc, lat, lng, genres }) {
                 <Chip
                   key={index}
                   label={elm.name}
-                  style={{ margin: "5px", backgroundColor: getColor(index) }}
+                  style={{
+                    margin: "5px",
+                    backgroundColor: useColors.getColors(elm.genreId),
+                  }}
                 ></Chip>
               ))}
           </div>
@@ -100,11 +99,11 @@ export default function Marker({ name, isPublic, desc, lat, lng, genres }) {
           >
             <div>
               <span style={{ fontWeight: "bold" }}>Lattitude</span>
-              <Typography color="primary">{lat}</Typography>
+              <Typography color="primary">{lat && lat.toFixed(2)}</Typography>
             </div>
             <div>
               <span style={{ fontWeight: "bold" }}>Longitude</span>
-              <Typography color="primary">{lng}</Typography>
+              <Typography color="primary">{lng && lng.toFixed(2)}</Typography>
             </div>
           </div>
         </div>

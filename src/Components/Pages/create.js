@@ -3,7 +3,15 @@ import GoogleMapReact from "google-map-react";
 import React from "react";
 import SearchComplot from "./SearchComplot";
 import { toast } from "react-toastify";
-import { TextareaAutosize, TextField, Button, Switch, Select, MenuItem, Chip } from "@mui/material";
+import {
+  TextareaAutosize,
+  TextField,
+  Button,
+  Switch,
+  Select,
+  MenuItem,
+  Chip,
+} from "@mui/material";
 import Marker from "../Marker";
 import { getOneApi, createComplotApi, getAllGenresApi } from "../hooks/useApi";
 import { useParams } from "react-router-dom";
@@ -14,8 +22,8 @@ export default function Create() {
   const [longitude, setLongitude] = useState(55);
   const [active, setActive] = useState(true);
   const [description, setDescription] = useState("");
-  const [ possibleGenres, setPossibleGenres] = useState([])
-  const [genres, setGenres] = useState([])
+  const [possibleGenres, setPossibleGenres] = useState([]);
+  const [genres, setGenres] = useState([]);
 
   const color = ["#faedcd", "#d4a373", "#ccd5ae", "#e9edc9", "#fefae0"];
 
@@ -28,34 +36,46 @@ export default function Create() {
   };
 
   const id = useParams();
-
+  const removeGenre = (elm) => {
+    let newGenres = genres.filter((x) => x != elm);
+    setGenres(newGenres);
+    setPossibleGenres([...possibleGenres, elm]);
+  };
+  const addGenre = (elm) => {
+    setGenres([...genres, elm]);
+    let newPossibles = possibleGenres.filter((x) => x != elm);
+    setPossibleGenres(newPossibles);
+  };
   const getDesc = async (desc) => {
     var res = await getOneApi(desc);
-    if (!res.isSucess) toast.error(res.error);
+    if (!res.isSucess) return toast.error(res.error);
     setName(res.result.title);
     setDescription(res.result.extract);
   };
 
   useEffect(() => {
     getAllGenresApi().then((value) => {
-      if(!value.isSucess) toast.error(value.error)
-      setPossibleGenres(value.result)
-    })
-
-  }, [])
+      if (!value.isSucess) return toast.error(value.error);
+      setPossibleGenres(value.result);
+    });
+  }, []);
 
   const Cancel = () => {
     window.location.href = "/dashboard";
   };
 
   const Create = async () => {
+    const genresIds = genres.map((a) => {
+      return { GenreId: a.id };
+    });
     var res = await createComplotApi(
       id,
       lattitude,
       longitude,
       name,
       active,
-      description
+      description,
+      genresIds
     );
     if (!res.isSucess) toast.error(res.error);
     if (res.isSucess) Cancel();
@@ -86,18 +106,23 @@ export default function Create() {
         variant="outlined"
         onChange={(e) => setName(e.target.value)}
       />
-      <div style={{display: "flex"}}>
-      {genres &&
-              genres.map((elm, index) => (
-                <Chip
-                  key={index}
-                  label={elm.name}
-                  style={{ margin: "5px", backgroundColor: getColor(index) }}
-                ></Chip>
-              ))}
+      <div style={{ display: "flex" }}>
+        {genres &&
+          genres.map((elm, index) => (
+            <Chip
+              onClick={() => removeGenre(elm)}
+              key={index}
+              label={elm.name}
+              style={{ margin: "5px", backgroundColor: getColor(index) }}
+            ></Chip>
+          ))}
       </div>
-      <Select style={{width :"150px"}}>
-        {possibleGenres.map((elm, index) => <MenuItem key={index} value={elm.name} onClick={() => {setGenres([...genres, elm]); setPossibleGenres([...possibleGenres], elm)}}>{elm.name}</MenuItem>)}
+      <Select style={{ width: "150px" }}>
+        {possibleGenres.map((elm, index) => (
+          <MenuItem key={index} value={elm.name} onClick={() => addGenre(elm)}>
+            {elm.name}
+          </MenuItem>
+        ))}
       </Select>
       <TextareaAutosize
         disabled={true}

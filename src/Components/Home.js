@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import Marker from "./Marker";
-import { getAllApi } from "./hooks/useApi";
+import { getAllAndPublicApi } from "./hooks/useApi";
 
 export default function Home() {
   let [markers, setMarkers] = useState([]);
@@ -18,9 +18,9 @@ export default function Home() {
   };
 
   useEffect(() => {
-    getAllApi().then((complots) => {
+    getAllAndPublicApi().then((complots) => {
       if (!complots.isSucess) toast.error(complots.error);
-      console.log(complots);
+
       setMarkers(complots.result);
     });
   }, []);
