@@ -1,7 +1,7 @@
 import React from "react";
 async function register(email, password, username) {
   const user = {
-    username : username,
+    username: username,
     email: email,
     password: password,
   };
@@ -16,35 +16,29 @@ async function register(email, password, username) {
   }).then((data) => data.json());
 }
 
-
 export default function CreateAccount() {
-    const [email, setEmail] = React.useState();
-    const [password, setPassword] = React.useState();
-    const [username, setUserName] = React.useState();
-    
-    const handleSubmit = async e => {
-        
-        e.preventDefault();
-        await register(email, password, username).then((value) => {
-          if (!value.isSuccess) {
-            alert(value.errorMessage);
-          }
-          else if (value.result === undefined) {
-            alert("Failed connection Error value has no result" );
-          }
-          else {
-            localStorage.setItem(
-              process.env.REACT_APP_AUTH_COOKIE_NAME,
-              JSON.stringify({ user: value.result })
-            );
-            window.location.href = "/"
-          }
-         
-        });
-    }
+  const [email, setEmail] = React.useState();
+  const [password, setPassword] = React.useState();
+  const [username, setUserName] = React.useState();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await register(email, password, username).then((value) => {
+      if (!value.isSuccess) {
+        alert(value.errorMessage);
+      } else if (value.result === undefined) {
+        alert("Failed connection Error value has no result");
+      } else {
+        localStorage.setItem(
+          process.env.REACT_APP_AUTH_COOKIE_NAME,
+          JSON.stringify({ user: value.result })
+        );
+        window.location.href = "/";
+      }
+    });
+  };
 
   return (
-
     <div className="container">
       <div className="row">
         <div className="col-md-6 offset-md-3">
@@ -65,6 +59,7 @@ export default function CreateAccount() {
               </div>
 
               <div className="mb-3">
+                <label style={{ fontWeight: "bold" }}>Email</label>
                 <input
                   type="text"
                   id="email"
@@ -77,6 +72,7 @@ export default function CreateAccount() {
                 />
               </div>
               <div className="mb-3">
+                <label style={{ fontWeight: "bold" }}>Pseudo</label>
                 <input
                   type="text"
                   id="username"
@@ -89,6 +85,7 @@ export default function CreateAccount() {
                 />
               </div>
               <div className="mb-3">
+                <label style={{ fontWeight: "bold" }}>Mot de passe</label>
                 <input
                   type="password"
                   id="password"
@@ -112,11 +109,7 @@ export default function CreateAccount() {
                 className="form-text text-center mb-5 text-dark"
               >
                 Already have an account?{" "}
-                <a
-                  href="/login"
-                 
-                  className="text-dark fw-bold"
-                >
+                <a href="/login" className="text-dark fw-bold">
                   {" "}
                   Login
                 </a>
@@ -126,6 +119,5 @@ export default function CreateAccount() {
         </div>
       </div>
     </div>
-
   );
 }

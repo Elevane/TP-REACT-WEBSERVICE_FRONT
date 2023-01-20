@@ -8,7 +8,7 @@ export default function NavBar() {
       style={{ width: "20%" }}
     >
       <h3 className="w3-bar-item" style={{ marginBottom: "40px" }}>
-        Map Website
+        Complots
       </h3>
       <article style={{ display: "flex", alignItems: "end" }}>
         <img

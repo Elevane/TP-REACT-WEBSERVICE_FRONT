@@ -49,45 +49,6 @@ export default function Login() {
     window.location.href = "/CreateAccount";
   };
   return (
-    /*<div id="login-form-wrap" className="card">
-      <h2 className="card-header"> Login </h2>{" "}
-      <form id="login-form" onSubmit={handleSubmit}>
-        <p>
-          <input
-            type="text"
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-            name="email"
-            placeholder="email"
-            required
-          />
-        </p>{" "}
-        <p>
-          <input
-            type="password"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-            name="password"
-            placeholder="password"
-            required
-          />
-        </p>{" "}
-        <p>
-          <input type="submit" id="login" value="Login" />
-        </p>{" "}
-      </form>{" "}
-      <div id="create-account-wrap">
-        <p>
-          {" "}
-          Not a member ?{" "}
-          <a href="/create" onClick={handleCreateAccount}>
-            {" "}
-            Create Account{" "}
-          </a>
-        </p>
-      </div>{" "}
-    </div>*/
-
     <div className="container">
       <div className="row">
         <div className="col-md-6 offset-md-3">
@@ -108,6 +69,7 @@ export default function Login() {
               </div>
 
               <div className="mb-3">
+                <label style={{ fontWeight: "bold" }}>Email</label>
                 <input
                   type="text"
                   id="email"
@@ -119,6 +81,7 @@ export default function Login() {
                   required
                 />
               </div>
+              <label style={{ fontWeight: "bold" }}>Mot de passe</label>
               <div className="mb-3">
                 <input
                   type="password"
