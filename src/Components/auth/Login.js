@@ -52,7 +52,7 @@ export default function Login() {
     <div className="container">
       <div className="row">
         <div className="col-md-6 offset-md-3">
-          <h2 className="text-center text-dark mt-5">Map Marker</h2>
+          <h2 className="text-center text-dark mt-5">Complot</h2>
           <div className="text-center mb-5 text-dark">TP PWA bastien AUBRY</div>
           <div className="card my-5">
             <form
