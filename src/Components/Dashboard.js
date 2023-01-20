@@ -42,9 +42,9 @@ export default function Home() {
               <TableCell style={{ fontWeight: "bold" }}>Lattitude</TableCell>
               <TableCell style={{ fontWeight: "bold" }}>Longitude</TableCell>
               <TableCell style={{ fontWeight: "bold" }}>Genres</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>
+              {/* <TableCell style={{ fontWeight: "bold" }}>
                 Configuration
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -92,7 +92,7 @@ export default function Home() {
                       ></Chip>
                     ))}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <IconButton
                     onClick={() =>
                       (window.location.href = "/dashboard/update/" + app.id)
@@ -103,7 +103,7 @@ export default function Home() {
                   <IconButton onClick={deleteComplot}>
                     <Delete />
                   </IconButton>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
