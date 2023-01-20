@@ -5,7 +5,6 @@ import useLocalStorage from "../auth/Hooks/useLocalStorage";
 const user = useLocalStorage.GetUser();
 
 const processResult = (value) => {
-  console.log(value);
   if (value && value.api) return { isSucess: true, result: [] };
   if (value && value.api === false)
     return { isSucess: false, error: value.errorMessage };

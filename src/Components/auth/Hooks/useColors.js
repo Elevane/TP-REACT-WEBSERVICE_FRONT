@@ -17,7 +17,6 @@ const colors = [
 ];
 
 const getColors = (index) => {
-  console.log(index);
   return colors[index];
 };
 
